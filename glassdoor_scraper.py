@@ -43,8 +43,10 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
         time.sleep(.1)
 
         try:
-            driver.find_element_by_class_name("ModalStyle__xBtn___29PT9").click()  #clicking to the X.
+            driver.find_element_by_css_selector('[alt="Close"]').click()  #clicking to the X.
+            print(' x out worked')
         except NoSuchElementException:
+            print(' x out failed')
             pass
 
         

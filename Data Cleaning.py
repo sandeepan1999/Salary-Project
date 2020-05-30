@@ -23,22 +23,39 @@ df['max_salary'] = min_hr.apply(lambda  x: int(x.split('-')[1]))
 df['avg_salary'] = (df.min_salary+df.max_salary)/2
 
 
-#company name text only
+##Company Name Text Only
 df['company_txt'] = df.apply(lambda x: x['Company Name'] if x['Rating']<0 else x['Company Name'][:-3],axis=1)
 
-#city field
+##City Field
 df['job_headquarters_city'] = df['Headquarters'].apply(lambda x: x.split(',')[0])
 df.job_headquarters_city.value_counts()
 
 
 df['same_location'] = df.apply(lambda x:1 if x.Location == x.job_headquarters_city else 0, axis=1)
 
-#age of company
+#Age of Company
 df['company_age'] = df.Founded.apply(lambda x: x if x<1 else 2020-x)
 
-#parsing of job description (python,etc)
 
+##Parsing of Job description (python,etc)
 #python
-df['Job Description'].dtype
-df['python_yn'] = df['Job Description'].apply(lambda x:1 if 'python' in x.lower() else 0)
+df['python_yn'] = df['Job Description'].apply(lambda x:1 if 'python' in str(x).lower() else 0)
 df.python_yn.value_counts()
+
+#R
+df['R_yn'] = df['Job Description'].apply(lambda x:1 if 'R-Studio' in str(x).lower() or 'r studio' in str(x).lower() else 0)
+df.R_yn.value_counts()
+
+#Spark
+df['spark_yn'] = df['Job Description'].apply(lambda x:1 if 'spark' in str(x).lower() else 0)
+df.spark_yn.value_counts()
+
+#AWS
+df['aws_yn'] = df['Job Description'].apply(lambda x:1 if 'aws' in str(x).lower() else 0)
+df.aws_yn.value_counts()
+
+#Excel
+df['excel_yn'] = df['Job Description'].apply(lambda x:1 if 'excel' in str(x).lower() else 0)
+df.excel_yn.value_counts()
+
+df.to_csv('glassdoor_jobs_cleaned.csv',index=False)

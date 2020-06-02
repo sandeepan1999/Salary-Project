@@ -90,40 +90,17 @@ mean_absolute_error(y_test,tpred_rf)
 
 mean_absolute_error(y_test,(tpred_lm+tpred_rf)/2)
 
-np.mean(cross_val_score(lm,X_train,y_train, scoring='neg_mean_absolute_error', cv=3))
 
-#Lasso Regression
-from sklearn.linear_model import Lasso
-lm_l = Lasso()
-np.mean(cross_val_score(lm_l,X_train,y_train, scoring='neg_mean_absolute_error', cv=3))
+import pickle
+pickl = {'model': gs.best_estimator_}
+pickle.dump( pickl, open( 'model_file' + ".p", "wb" ) )
 
-alpha=[]
-error=[]
 
-for i in range(1,100):
-    alpha.append(i/10)
-    lml = Lasso(alpha=(i/10))
-    error.append(np.mean(cross_val_score(lm_l,X_train,y_train, scoring='neg_mean_absolute_error', cv=3)))
+file_name = "model_file.p"
+with open(file_name, 'rb') as pickled:
+    data = pickle.load(pickled)
+    model = data['model']
 
-plt.plot(alpha,error)
+model.predict(X_test.iloc[1,:].values.reshape(1,-1))
 
-err = tuple(zip(alpha,error))
-df_err = pd.DataFrame(err, columns = ['alpha','error'])
-df_err[df_err.error == max(df_err.error)]
-
-#Random Forest
-from sklearn.ensemble import RandomForestRegressor
-rf = RandomForestRegressor()
-
-np.mean(cross_val_score(rf, X_train, y_train, scoring='neg_mean_absolute_error', cv=3))
-
-#Tune models using GridsearchCV
-from sklearn.model_selection import GridSearchCV
-parameters = {'n_estimators':range(10,300,10), 'criterion':('mse','mae'),'max_features':('auto', 'sqrt', 'log2')}
-
-gs = GridSearchCV(rf, parameters, scoring='neg_mean_absolute_error', cv=3)
-gs.fit(X_train, y_train)
-
-gs.best_score_
-gs.best_estimator_
-#test ensembles
+list(X_test.iloc[1,:])
